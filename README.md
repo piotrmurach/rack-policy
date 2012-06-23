@@ -30,6 +30,8 @@ By default when the Rack application is loaded no cookies will be set(provided n
 Rack::Policy::CookieLimiter consent_token: 'allow_me'
 ```
 
+The very same `consent_token` is used to toggle the limiter behaviour.
+
 ## Examples
 
 ### Rails 3.x
@@ -47,18 +49,18 @@ And then in your custome controller create actions responsible for setting and u
 
 ```ruby
 class CookiePolicyController < ApplicationController
+
   def allow
-    cookies[:consent_token] = {
+    response.set_cookie 'rack.policy', {
       value: 'true',
       expires: 1.year.from_now.utc
     }
+    render nothing: true
   end
 
   def deny
-    cookies[:consent_token] = {
-      value: '',
-      expires: Time.at(0)
-    }
+    response.delete_cookie 'rack.policy'
+    render nothing: true
   end
 end
 ```
@@ -77,6 +79,8 @@ Set and unset cookie consent in similar way to Rails 3.x example.
 
 ### Sinatra
 
+For classic style sinatra application do
+
 ```ruby
 require 'sinatra'
 require 'rack/policy'
@@ -86,6 +90,8 @@ use Rack::Policy::CookieLimiter consent_token: 'rack.policy'
 get('/hello') { "Hello world" }
 
 get('/allow') { }
+
+get('/deny') { }
 ```
 
 ### Rackup app
