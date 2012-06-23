@@ -11,17 +11,17 @@ describe Rack::Policy::CookieLimiter do
 
   context 'no consent' do
     it 'removes cookie session header' do
-      mock_app with_headers('Set-Cookie' => "google=bot")
+      mock_app DummyApp
       get '/'
       last_response.should be_ok
       last_response.headers['Set-Cookie'].should be_nil
     end
 
     it 'revalidates caches' do
-      mock_app with_headers('Set-Cookie' => "google=bot")
+      mock_app DummyApp
       get '/'
       last_response.should be_ok
-      last_response.headers['Cache-control'].should_not be_nil
+      last_response.headers['Cache-Control'].should be_nil
     end
   end
 

@@ -2,6 +2,7 @@
 
 module Rack
   module Policy
+    # This is the class for limiting cookie storage on client machine.
     class CookieLimiter
       include ::Rack::Utils
 
@@ -9,10 +10,11 @@ module Rack
       CACHE_CONTROL = "Cache-Control".freeze
       CONSENT_TOKEN = "cookie_limiter".freeze
 
-      attr_reader :app
-      attr_reader :options
+      attr_reader :app, :options
       attr_accessor :headers
 
+      # @option options [String] :consent_token
+      #
       def initialize(app, options={})
         @app, @options = app, options
       end
@@ -26,14 +28,20 @@ module Rack
       end
 
       def call(env)
-        status, headers, body = app.call(env)
+        status, headers, body = @app.call(env)
         self.headers = headers
-        clear_cookies! unless allowed?
-        [status, headers, body]
+        request = Rack::Request.new(env)
+        response = Rack::Response.new body, status, headers
+        clear_cookies!(request, response) unless allowed?(request)
+        response.finish
       end
 
-      def allowed?
-        if parse_cookies.has_key?(consent_token)
+      # Returns `false` if the cookie policy disallows cookie storage
+      # for a given request, or `true` otherwise.
+      #
+      def allowed?(request)
+        if ( request.cookies.has_key?(consent_token.to_s) ||
+             parse_cookies.has_key?(consent_token.to_s) )
           true
         else
           false
@@ -43,6 +51,7 @@ module Rack
       protected
 
       # Returns the response cookies converted to Hash
+      #
       def parse_cookies
         cookies = {}
         if header = headers[SET_COOKIE]
@@ -57,9 +66,15 @@ module Rack
         cookies
       end
 
-      def clear_cookies!
+      def clear_cookies!(request, response)
+        cookies = parse_cookies
         headers.delete(SET_COOKIE)
         revalidate_cache!
+
+        cookies.merge(request.cookies).each do |key, value|
+          response.delete_cookie key.to_sym
+        end
+
         headers
       end
 
@@ -69,6 +84,10 @@ module Rack
 
       def set_cookie(key, value)
         ::Rack::Utils.set_cookie_header!(headers, key, value)
+      end
+
+      def delete_cookie(key, value)
+        ::Rack::Utils.delete_cookie_header!(headers, key, value)
       end
 
     end # CookieLimiter
