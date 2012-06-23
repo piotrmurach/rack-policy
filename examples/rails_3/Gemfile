@@ -1,0 +1,8 @@
+source :rubygems
+
+gem 'actionpack', "~> 3.2"
+gem 'railties', "~> 3.2"
+gem 'rack-policy', :path => File.expand_path('../../../', __FILE__)
+gem 'tzinfo'
+gem 'rack'
+gem 'thin'
