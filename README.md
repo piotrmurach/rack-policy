@@ -1,4 +1,8 @@
 # Rack-Policy
+[![Build Status](https://secure.travis-ci.org/peter-murach/rack-policy.png?branch=master)][travis] [![Dependency Status](https://gemnasium.com/peter-murach/rack-policy.png?travis)][gemnasium]
+
+[travis]: http://travis-ci.org/peter-murach/rack-policy
+[gemnasium]: https://gemnasium.com/peter-murach/rack-policy
 
 This is Rack middleware that makes your app compliant with the 'EU ePrivacy Directive'
 whereby a user needs to provide implied consent before any data can be stored on his
@@ -20,7 +24,7 @@ Or install it yourself as:
 
 ## Usage
 
-By default when the Rack application is loaded no cookies will be set(provided no session cookies already exist), and any existing session cookies will be destroyed. Throught the request cycle cookies now won't be set until the user has given explicit consent. This can be controlled by setting consent token
+By default when the Rack application is loaded no cookies will be set(provided no session cookies already exist), and any existing session cookies will be destroyed. Throughout the request cycle cookies now won't be set until the user has given explicit consent. This can be controlled by setting consent token
 
 ```ruby
 Rack::Policy::CookieLimiter consent_token: 'allow_me'
