@@ -34,6 +34,8 @@ The very same `consent_token` is used to toggle the limiter behaviour.
 
 ## Examples
 
+Adding `Rack::Policy::CookieLimiter` do Rack applications
+
 ### Rails 3.x
 
 ```ruby
@@ -71,7 +73,7 @@ end
 # config/environment
 
 Rails::Initializer.run do |config|
-  config.middleware.use Rack::Policy::Cookie :consent_token => 'rack.policy'
+  config.middleware.use Rack::Policy::CookieLimiter consent_token: 'rack.policy'
 end
 ```
 
@@ -82,19 +84,31 @@ Set and unset cookie consent in similar way to Rails 3.x example.
 For classic style sinatra application do
 
 ```ruby
+#!/usr/bin/env ruby -rubygems
 require 'sinatra'
 require 'rack/policy'
 
 use Rack::Policy::CookieLimiter consent_token: 'rack.policy'
 
-get('/hello') { "Hello world" }
+get('/') { "Allow cookies to be set? <a href='/allow'>Allow</a>" }
 
-get('/allow') { }
+get('/allow') { response.set_cookie 'rack.policy' }
 
-get('/deny') { }
+get('/deny') { response.delete_cookie 'rack.policy' }
 ```
 
+### Padrino app
+
 ### Rackup app
+
+```ruby
+#!/usr/bin/env rackup
+require 'rack/policy'
+
+use Rack::Policy::CookieLimiter consent_token: 'rack.policy'
+
+run lambda { |env| [200, {'Content-Type' => 'text/plain'}, "Hello, world!\n"] }
+```
 
 ## Contributing
 
