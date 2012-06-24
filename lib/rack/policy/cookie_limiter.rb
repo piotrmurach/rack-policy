@@ -6,12 +6,13 @@ module Rack
     class CookieLimiter
       include ::Rack::Utils
 
+      HTTP_COOKIE   = "HTTP_COOKIE".freeze
       SET_COOKIE    = "Set-Cookie".freeze
       CACHE_CONTROL = "Cache-Control".freeze
       CONSENT_TOKEN = "cookie_limiter".freeze
 
       attr_reader :app, :options
-      attr_accessor :headers
+      attr_accessor :status, :headers, :body
 
       # @option options [String] :consent_token
       #
@@ -28,12 +29,11 @@ module Rack
       end
 
       def call(env)
-        status, headers, body = @app.call(env)
-        self.headers = headers
+        self.status, self.headers, self.body = @app.call(env)
         request = Rack::Request.new(env)
         response = Rack::Response.new body, status, headers
         clear_cookies!(request, response) unless allowed?(request)
-        response.finish
+        finish(env)
       end
 
       # Returns `false` if the cookie policy disallows cookie storage
@@ -45,6 +45,18 @@ module Rack
           true
         else
           false
+        end
+      end
+
+      # Finish http response with proper headers
+      def finish(env)
+        if [204, 304].include?(status.to_i)
+          headers.delete "Content-Type"
+          [status.to_i, headers, []]
+        elsif env['REQUEST_METHOD'] == 'HEAD'
+          [status.to_i, headers, []]
+        else
+          [status.to_i, headers, body]
         end
       end
 
@@ -69,6 +81,7 @@ module Rack
       def clear_cookies!(request, response)
         cookies = parse_cookies
         headers.delete(SET_COOKIE)
+        request.env.delete(HTTP_COOKIE)
         revalidate_cache!
 
         cookies.merge(request.cookies).each do |key, value|

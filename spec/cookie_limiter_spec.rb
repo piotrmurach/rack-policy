@@ -7,21 +7,36 @@ describe Rack::Policy::CookieLimiter do
     last_response.body.should == 'ok'
   end
 
-  it "does not meter where the middleware is inserted"
+  it "does not meter where the middleware is inserted" do
+    mock_app {
+      use Rack::Policy::CookieLimiter
+      use Rack::Session::Cookie, :key => 'app.session', :path => '/'
+      run DummyApp
+    }
+    get '/'
+    last_response.should be_ok
+    last_response.headers['Set-Cookie'].should be_nil
+  end
 
   context 'no consent' do
     it 'removes cookie session header' do
-      mock_app DummyApp
-      get '/'
+      mock_app {
+        use Rack::Policy::CookieLimiter
+        run DummyApp
+      }
+      request '/'
       last_response.should be_ok
       last_response.headers['Set-Cookie'].should be_nil
     end
 
     it 'revalidates caches' do
-      mock_app DummyApp
-      get '/'
+      mock_app {
+        use Rack::Policy::CookieLimiter
+        run DummyApp
+      }
+      request '/'
       last_response.should be_ok
-      last_response.headers['Cache-Control'].should be_nil
+      last_response.headers['Cache-Control'].should =~ /must-revalidate/
     end
   end
 
@@ -43,6 +58,17 @@ describe Rack::Policy::CookieLimiter do
       mock_app with_headers('Set-Cookie' => "cookie_limiter=true; path=/;\ngithub.com=bot")
       get '/'
       last_response.headers['Set-Cookie'].should =~ /github.com=bot/
+    end
+  end
+
+  context 'finish response' do
+    it 'returns correct response for head request' do
+      mock_app {
+        use Rack::Policy::CookieLimiter
+        run DummyApp
+      }
+      head '/'
+      last_response.should be_ok
     end
   end
 
