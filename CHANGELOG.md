@@ -1,8 +1,12 @@
-0.2.0 (June x, 2012)
+0.2.0 (June 24, 2012)
 
 * Fix bug when checking allowed cookie.
 * Refactor cookie clearing to work off request and response cycle.
 * Add cookie deletion.
+* Add response headers handling and fix bug with cache revalidation.
+* Add code comments.
+* Improve documentation with sinatra and rackup examples.
+* Add code example for rails 3 app.
 
 0.1.0 (June 23, 2012)
 
