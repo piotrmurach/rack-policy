@@ -29,6 +29,10 @@ module Rack
       end
 
       def call(env)
+        dup.call!(env)
+      end
+
+      def call!(env)
         self.status, self.headers, self.body = @app.call(env)
         request = Rack::Request.new(env)
         response = Rack::Response.new body, status, headers
