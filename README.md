@@ -27,14 +27,14 @@ Or install it yourself as:
 By default when the Rack application is loaded no cookies will be set(provided no session cookies already exist), and any existing session cookies will be destroyed. Throughout the request cycle cookies now won't be set until the user has given explicit consent. This can be controlled by setting consent token
 
 ```ruby
-Rack::Policy::CookieLimiter consent_token: 'allow_me'
+Rack::Policy::CookieLimiter, consent_token: 'allow_me'
 ```
 
 The very same `consent_token` is used to toggle the limiter behaviour.
 
 ## Examples
 
-Adding `Rack::Policy::CookieLimiter` do Rack applications
+Adding `Rack::Policy::CookieLimiter` to Rack applications
 
 ### Rails 3.x
 
@@ -43,11 +43,11 @@ Adding `Rack::Policy::CookieLimiter` do Rack applications
 require 'rack/policy'
 
 class Application < Rails::Application
-  config.middleware.use Rack::Policy::CookieLimiter consent_token: 'rack.policy'
+  config.middleware.use Rack::Policy::CookieLimiter, consent_token: 'rack.policy'
 end
 ```
 
-And then in your custome controller create actions responsible for setting and unsetting cookie policy
+And then in your custom controller create actions responsible for setting and unsetting cookie policy
 
 ```ruby
 class CookiePolicyController < ApplicationController
@@ -55,6 +55,7 @@ class CookiePolicyController < ApplicationController
   def allow
     response.set_cookie 'rack.policy', {
       value: 'true',
+      path: '/',
       expires: 1.year.from_now.utc
     }
     render nothing: true
@@ -73,7 +74,8 @@ end
 # config/environment
 
 Rails::Initializer.run do |config|
-  config.middleware.use Rack::Policy::CookieLimiter consent_token: 'rack.policy'
+  require 'rack/policy'
+  config.middleware.insert_before Rack::Lock, Rack::Policy::CookieLimiter, consent_token: 'rack.policy'
 end
 ```
 
