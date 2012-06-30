@@ -90,7 +90,9 @@ For classic style sinatra application do
 require 'sinatra'
 require 'rack/policy'
 
-use Rack::Policy::CookieLimiter consent_token: 'rack.policy'
+configure do
+  use Rack::Policy::CookieLimiter, consent_token: 'rack.policy'
+end
 
 get('/') { "Allow cookies to be set? <a href='/allow'>Allow</a>" }
 
@@ -99,9 +101,19 @@ get('/allow') { response.set_cookie 'rack.policy' }
 get('/deny') { response.delete_cookie 'rack.policy' }
 ```
 
-### Padrino app
+### Padrino
 
-### Rackup app
+```ruby
+#!/usr/bin/env ruby -rubygems
+require 'padrino'
+require 'rack/policy'
+
+class MyApp < Padrino::Application
+  use Rack::Policy::CookieLimiter consent_token: 'rack.policy'
+end
+```
+
+### Rackup
 
 ```ruby
 #!/usr/bin/env rackup
