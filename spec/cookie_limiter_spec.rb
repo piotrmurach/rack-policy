@@ -70,6 +70,21 @@ describe Rack::Policy::CookieLimiter do
       head '/'
       last_response.should be_ok
     end
+
+    it "strips content headers for no content" do
+      mock_app with_status(204)
+      get '/'
+      last_response.headers['Content-Type'].should be_nil
+      last_response.headers['Content-Length'].should be_nil
+      last_response.body.should be_empty
+    end
+
+    it "strips headers for information request" do
+      mock_app with_status(102)
+      get '/'
+      last_response.headers['Content-Length'].should be_nil
+      last_response.body.should be_empty
+    end
   end
 
 end # Rack::Policy::CookieLimiter
