@@ -1,3 +1,10 @@
+0.3.0 (June 30, 2012)
+
+* Add thread safety.
+* Update documentation with usage examples for sinatra, rackup.
+* Ensure information type requests don't have body.
+* Add sinatra app to code examples.
+
 0.2.0 (June 24, 2012)
 
 * Fix bug when checking allowed cookie.
