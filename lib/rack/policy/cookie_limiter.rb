@@ -54,7 +54,8 @@ module Rack
 
       # Finish http response with proper headers
       def finish(env)
-        if [204, 304].include?(status.to_i)
+        if [204, 304].include?(status.to_i) || (status.to_i / 100 == 1)
+          headers.delete "Content-Length"
           headers.delete "Content-Type"
           [status.to_i, headers, []]
         elsif env['REQUEST_METHOD'] == 'HEAD'
