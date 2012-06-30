@@ -35,6 +35,10 @@ module TestHelpers
   def with_headers(headers)
     proc { [200, {'Content-Type' => 'text/plain' }.merge(headers), ['ok']] }
   end
+
+  def with_status(status=nil)
+    proc { [status || 200, {'Content-Type' => 'text/plain' }, ['ok']] }
+  end
 end
 
 RSpec.configure do |config|
