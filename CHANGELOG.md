@@ -1,3 +1,10 @@
+0.4.0 (July x, 2012)
+
+* Add helpers module to hold common rack apps extensions.
+* Add extensions loader.
+* Add view extensions for Rails 2, 3 & Sinatra.
+* Add specs for finish method to verify headers removal.
+
 0.3.0 (June 30, 2012)
 
 * Add thread safety.
