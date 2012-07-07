@@ -12,6 +12,11 @@ module Rack
       CONSENT_TOKEN = "cookie_limiter".freeze
 
       attr_reader :app, :options
+
+      # The environment of the request
+      attr_reader :env
+
+      # HTTP message
       attr_accessor :status, :headers, :body
 
       # @option options [String] :consent_token
@@ -33,11 +38,24 @@ module Rack
       end
 
       def call!(env)
-        self.status, self.headers, self.body = @app.call(env)
+        @env = env
         request = Rack::Request.new(env)
+        accepts?(request)
+        self.status, self.headers, self.body = @app.call(env)
         response = Rack::Response.new body, status, headers
         clear_cookies!(request, response) unless allowed?(request)
         finish(env)
+      end
+
+      # Identifies the approval of cookie policy inside rack app.
+      #
+      def accepts?(request)
+        if ( request.cookies.has_key?(consent_token.to_s) )
+          @env['rack-policy.consent'] = 'true'
+        else
+          @env.delete(HTTP_COOKIE) if @env[HTTP_COOKIE]
+          @env['rack-policy.consent'] = nil
+        end
       end
 
       # Returns `false` if the cookie policy disallows cookie storage
@@ -86,7 +104,6 @@ module Rack
       def clear_cookies!(request, response)
         cookies = parse_cookies
         headers.delete(SET_COOKIE)
-        request.env.delete(HTTP_COOKIE)
         revalidate_cache!
 
         cookies.merge(request.cookies).each do |key, value|
