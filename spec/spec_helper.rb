@@ -19,12 +19,11 @@ module TestHelpers
     @app || mock_app(DummyApp)
   end
 
-  def mock_app(app=nil, &block)
+  def mock_app(app=nil, opts={}, &block)
     app = block if app.nil? and block.arity == 1
     if app
-      klass = described_class
       mock_app do
-        use klass
+        use Rack::Policy::CookieLimiter, opts
         run app
       end
     else
