@@ -32,6 +32,8 @@ Rack::Policy::CookieLimiter, consent_token: 'allow_me'
 
 The very same `consent_token` is used to toggle the limiter behaviour.
 
+The `cookies_accpeted?` view helper method is automatically loaded for Rails, Sinatra & Padrino apps.
+
 ## Examples
 
 Adding `Rack::Policy::CookieLimiter` to Rack applications
@@ -43,7 +45,7 @@ Adding `Rack::Policy::CookieLimiter` to Rack applications
 require 'rack/policy'
 
 class Application < Rails::Application
-  config.middleware.use Rack::Policy::CookieLimiter, consent_token: 'rack.policy'
+  config.middleware.insert_before ActionDispatch::Cookies, Rack::Policy::CookieLimiter, consent_token: 'rack.policy'
 end
 ```
 
@@ -68,6 +70,22 @@ class CookiePolicyController < ApplicationController
 end
 ```
 
+Finally, in your view you can use helper method `cookies_accepted?` to display/toggle cookie information
+
+```ruby
+<% cookies_accepted? do %>
+  Accepted Cookies!
+<% end %>
+
+or
+
+<% if cookies_accepted? %>
+  Accepted Cookies!
+<% else %>
+  Cookies Not Accepted!
+<% end %>
+```
+
 ### Rails 2.x
 
 ```ruby
@@ -79,7 +97,7 @@ Rails::Initializer.run do |config|
 end
 ```
 
-Set and unset cookie consent in similar way to Rails 3.x example.
+Set and unset cookie consent in your controller and modify views logic in similar way to Rails 3.x example.
 
 ### Sinatra
 
@@ -101,6 +119,8 @@ get('/allow') { response.set_cookie 'rack.policy' }
 get('/deny') { response.delete_cookie 'rack.policy' }
 ```
 
+Similiar to Rails 3.x example you can use `cookies_accpeted?` helper to manage view logic related to cookie policy information.
+
 ### Padrino
 
 ```ruby
@@ -109,7 +129,7 @@ require 'padrino'
 require 'rack/policy'
 
 class MyApp < Padrino::Application
-  use Rack::Policy::CookieLimiter consent_token: 'rack.policy'
+  use Rack::Policy::CookieLimiter, consent_token: 'rack.policy'
 end
 ```
 
@@ -119,7 +139,7 @@ end
 #!/usr/bin/env rackup
 require 'rack/policy'
 
-use Rack::Policy::CookieLimiter consent_token: 'rack.policy'
+use Rack::Policy::CookieLimiter, consent_token: 'rack.policy'
 
 run lambda { |env| [200, {'Content-Type' => 'text/plain'}, "Hello, world!\n"] }
 ```
