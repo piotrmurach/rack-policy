@@ -18,6 +18,15 @@ describe Rack::Policy::Helpers do
 
   let(:helper_test) { HelperTest.new }
 
+  before do
+    helper_test.request.env.stub(:has_key?).and_return true
+  end
+
+  it "guards against missing key" do
+    helper_test.request.env.stub(:has_key?).and_return false
+    helper_test.cookies_accepted?.should be_false
+  end
+
   it "doesn't accept cookies" do
     helper_test.request.env.stub(:[]).with('rack-policy.consent') { nil }
     helper_test.cookies_accepted?.should be_false
