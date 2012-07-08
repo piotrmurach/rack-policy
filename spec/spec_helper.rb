@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 require 'rubygems'
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
