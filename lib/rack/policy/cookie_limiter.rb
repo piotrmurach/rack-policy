@@ -17,7 +17,7 @@ module Rack
       attr_reader :env
 
       # HTTP message
-      attr_accessor :status, :headers, :body
+      attr_reader :status, :headers, :body
 
       # @option options [String] :consent_token
       #
@@ -41,10 +41,10 @@ module Rack
         @env = env
         request = Rack::Request.new(env)
         accepts?(request)
-        self.status, self.headers, self.body = @app.call(env)
+        @status, @headers, @body = @app.call(env)
         response = Rack::Response.new body, status, headers
         clear_cookies!(request, response) unless allowed?(request)
-        finish(env)
+        finish
       end
 
       # Identifies the approval of cookie policy inside rack app.
@@ -71,7 +71,7 @@ module Rack
       end
 
       # Finish http response with proper headers
-      def finish(env)
+      def finish
         if [204, 304].include?(status.to_i) || (status.to_i / 100 == 1)
           headers.delete "Content-Length"
           headers.delete "Content-Type"
