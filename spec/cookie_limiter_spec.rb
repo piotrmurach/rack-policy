@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 require File.expand_path('../spec_helper.rb', __FILE__)
 
 describe Rack::Policy::CookieLimiter do
@@ -29,6 +31,16 @@ describe Rack::Policy::CookieLimiter do
       last_response.headers['Set-Cookie'].should be_nil
     end
 
+    it 'clears all the cookies' do
+      mock_app {
+        use Rack::Policy::CookieLimiter, :consent_token => 'consent'
+        run DummyApp
+      }
+      set_cookie ["foo=1", "bar=2"]
+      request '/'
+      last_request.cookies.should == {}
+    end
+
     it 'revalidates caches' do
       mock_app {
         use Rack::Policy::CookieLimiter
@@ -58,6 +70,39 @@ describe Rack::Policy::CookieLimiter do
       mock_app with_headers('Set-Cookie' => "cookie_limiter=true; path=/;\ngithub.com=bot")
       get '/'
       last_response.headers['Set-Cookie'].should =~ /github.com=bot/
+    end
+
+    context 'token' do
+      it 'preserves all the cookies if custom consent token present' do
+        mock_app {
+          use Rack::Policy::CookieLimiter, :consent_token => 'consent'
+          run DummyApp
+        }
+        set_cookie ["foo=1", "bar=2", "consent=true"]
+        request '/'
+        last_request.cookies.should == {'foo'=>'1', 'bar'=>'2', 'consent'=>'true'}
+      end
+    end
+  end
+
+  context 'accepts?' do
+    it "sets environment consent variable" do
+       mock_app {
+        use Rack::Policy::CookieLimiter
+        run DummyApp
+      }
+      request '/'
+      last_request.env.should have_key('rack-policy.consent')
+    end
+
+    it "assigns value for the consent variable" do
+       mock_app {
+        use Rack::Policy::CookieLimiter, :consent_token => 'consent'
+        run DummyApp
+      }
+      set_cookie ["consent=true"]
+      request '/'
+      last_request.env['rack-policy.consent'].should == 'true'
     end
   end
 
