@@ -7,7 +7,7 @@ if defined?(Rails) && Rails.respond_to?(:application)
 
 elsif defined?(Rails::Initializer)
   # Rails 2.3
-  require 'action/view/base'
+  require 'rack/policy/helpers'
 
   ActionView::Base.send :include, Rack::Policy::Helpers
 elsif defined?(Sinatra)
