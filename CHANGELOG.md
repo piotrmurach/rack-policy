@@ -1,3 +1,7 @@
+0.4.1 (April 25, 2012)
+
+* Fix failing to load view extension in Rails 2.3.x - #2
+
 0.4.0 (July 8, 2012)
 
 * Add helpers module to hold common rack apps extensions together with tests.
