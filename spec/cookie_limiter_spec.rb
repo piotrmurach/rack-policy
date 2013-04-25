@@ -12,7 +12,7 @@ describe Rack::Policy::CookieLimiter do
   it "does not meter where the middleware is inserted" do
     mock_app {
       use Rack::Policy::CookieLimiter
-      use Rack::Session::Cookie, :key => 'app.session', :path => '/'
+      use Rack::Session::Cookie, :key => 'app.session', :path => '/', :secret => 'foo'
       run DummyApp
     }
     get '/'
