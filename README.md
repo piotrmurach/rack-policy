@@ -32,7 +32,7 @@ Rack::Policy::CookieLimiter, consent_token: 'allow_me'
 
 The very same `consent_token` is used to toggle the limiter behaviour.
 
-The `cookies_accpeted?` view helper method is automatically loaded for Rails, Sinatra & Padrino apps.
+The `cookies_accepted?` view helper method is automatically loaded for Rails, Sinatra & Padrino apps.
 
 ## Examples
 
