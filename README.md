@@ -1,12 +1,12 @@
 # Rack-Policy
+[![Gem Version](https://badge.fury.io/rb/rack-policy.png)][gem]
 [![Build Status](https://secure.travis-ci.org/peter-murach/rack-policy.png?branch=master)][travis] [![Dependency Status](https://gemnasium.com/peter-murach/rack-policy.png?travis)][gemnasium]
 
+[gem]: http://badge.fury.io/rb/rack-policy
 [travis]: http://travis-ci.org/peter-murach/rack-policy
 [gemnasium]: https://gemnasium.com/peter-murach/rack-policy
 
-This is Rack middleware that makes your app compliant with the 'EU ePrivacy Directive'
-whereby a user needs to provide implied consent before any data can be stored on his
-machine.
+This is Rack middleware that makes your app compliant with the 'EU ePrivacy Directive' whereby a user needs to provide implied consent before any data can be stored on his machine.
 
 ## Installation
 
@@ -151,3 +151,8 @@ run lambda { |env| [200, {'Content-Type' => 'text/plain'}, "Hello, world!\n"] }
 3. Commit your changes (`git commit -am 'Added some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+## Copyright
+
+Copyright (c) 2012-2014 Piotr Murach. See LICENSE for further details.
+
