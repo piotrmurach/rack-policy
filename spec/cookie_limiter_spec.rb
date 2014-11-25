@@ -1,12 +1,12 @@
-# -*- encoding: utf-8 -*-
+# coding: utf-8 -*-
 
 require File.expand_path('../spec_helper.rb', __FILE__)
 
-describe Rack::Policy::CookieLimiter do
+RSpec.describe Rack::Policy::CookieLimiter do
 
   it 'preserves normal requests' do
-    get('/').should be_ok
-    last_response.body.should == 'ok'
+    expect(get('/')).to be_ok
+    expect(last_response.body).to eq('ok')
   end
 
   it "does not meter where the middleware is inserted" do
@@ -16,8 +16,8 @@ describe Rack::Policy::CookieLimiter do
       run DummyApp
     }
     get '/'
-    last_response.should be_ok
-    last_response.headers['Set-Cookie'].should be_nil
+    expect(last_response).to be_ok
+    expect(last_response.headers['Set-Cookie']).to eq(nil)
   end
 
   context 'no consent' do
@@ -27,8 +27,8 @@ describe Rack::Policy::CookieLimiter do
         run DummyApp
       }
       request '/'
-      last_response.should be_ok
-      last_response.headers['Set-Cookie'].should be_nil
+      expect(last_response).to be_ok
+      expect(last_response.headers['Set-Cookie']).to eq(nil)
     end
 
     it 'clears all the cookies' do
@@ -38,7 +38,7 @@ describe Rack::Policy::CookieLimiter do
       }
       set_cookie ["foo=1", "bar=2"]
       request '/'
-      last_request.cookies.should == {}
+      expect(last_request.cookies).to eq({})
     end
 
     it 'revalidates caches' do
@@ -47,8 +47,8 @@ describe Rack::Policy::CookieLimiter do
         run DummyApp
       }
       request '/'
-      last_response.should be_ok
-      last_response.headers['Cache-Control'].should =~ /must-revalidate/
+      expect(last_response).to be_ok
+      expect(last_response.headers['Cache-Control']).to match(/must-revalidate/)
     end
   end
 
@@ -56,20 +56,20 @@ describe Rack::Policy::CookieLimiter do
     it 'preserves cookie header' do
       mock_app with_headers('Set-Cookie' => "cookie_limiter=true; path=/;")
       get '/'
-      last_response.should be_ok
-      last_response.headers['Set-Cookie'].should_not be_nil
+      expect(last_response).to be_ok
+      expect(last_response.headers['Set-Cookie']).to_not eq(nil)
     end
 
     it 'sets consent cookie' do
       mock_app with_headers('Set-Cookie' => "cookie_limiter=true; path=/;")
       get '/'
-      last_response.headers['Set-Cookie'].should =~ /cookie_limiter/
+      expect(last_response.headers['Set-Cookie']).to match(/cookie_limiter/)
     end
 
     it 'preserves other session cookies' do
       mock_app with_headers('Set-Cookie' => "cookie_limiter=true; path=/;\ngithub.com=bot")
       get '/'
-      last_response.headers['Set-Cookie'].should =~ /github.com=bot/
+      expect(last_response.headers['Set-Cookie']).to match(/github.com=bot/)
     end
 
     context 'token' do
@@ -80,7 +80,7 @@ describe Rack::Policy::CookieLimiter do
         }
         set_cookie ["foo=1", "bar=2", "consent=true"]
         request '/'
-        last_request.cookies.should == {'foo'=>'1', 'bar'=>'2', 'consent'=>'true'}
+        expect(last_request.cookies).to eq({'foo'=>'1', 'bar'=>'2', 'consent'=>'true'})
       end
     end
   end
@@ -92,7 +92,7 @@ describe Rack::Policy::CookieLimiter do
         run DummyApp
       }
       request '/'
-      last_request.env.should have_key('rack-policy.consent')
+      expect(last_request.env).to have_key('rack-policy.consent')
     end
 
     it "assigns value for the consent variable" do
@@ -102,7 +102,7 @@ describe Rack::Policy::CookieLimiter do
       }
       set_cookie ["consent=true"]
       request '/'
-      last_request.env['rack-policy.consent'].should == 'true'
+      expect(last_request.env['rack-policy.consent']).to eq('true')
     end
   end
 
@@ -113,23 +113,22 @@ describe Rack::Policy::CookieLimiter do
         run DummyApp
       }
       head '/'
-      last_response.should be_ok
+      expect(last_response).to be_ok
     end
 
     it "strips content headers for no content" do
       mock_app with_status(204)
       get '/'
-      last_response.headers['Content-Type'].should be_nil
-      last_response.headers['Content-Length'].should be_nil
-      last_response.body.should be_empty
+      expect(last_response.headers['Content-Type']).to eq(nil)
+      expect(last_response.headers['Content-Length']).to eq(nil)
+      expect(last_response.body).to be_empty
     end
 
     it "strips headers for information request" do
       mock_app with_status(102)
       get '/'
-      last_response.headers['Content-Length'].should be_nil
-      last_response.body.should be_empty
+      expect(last_response.headers['Content-Length']).to eq(nil)
+      expect(last_response.body).to be_empty
     end
   end
-
 end # Rack::Policy::CookieLimiter

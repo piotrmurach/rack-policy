@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# coding: utf-8
 
 require File.expand_path('../spec_helper.rb', __FILE__)
 
@@ -16,34 +16,32 @@ class HelperTest
   end
 end
 
-describe Rack::Policy::Helpers do
-
+RSpec.describe Rack::Policy::Helpers do
   let(:helper_test) { HelperTest.new }
 
   before do
-    helper_test.request.env.stub(:has_key?).and_return true
+    allow(helper_test.request.env).to receive(:has_key?).and_return(true)
   end
 
   it "guards against missing key" do
-    helper_test.request.env.stub(:has_key?).and_return false
-    helper_test.cookies_accepted?.should be_false
+    allow(helper_test.request.env).to receive(:has_key?).and_return(false)
+    expect(helper_test.cookies_accepted?).to eq(false)
   end
 
   it "doesn't accept cookies" do
-    helper_test.request.env.stub(:[]).with('rack-policy.consent') { nil }
-    helper_test.cookies_accepted?.should be_false
+    allow(helper_test.request.env).to receive(:[]).with('rack-policy.consent') { nil }
+    expect(helper_test.cookies_accepted?).to eq(false)
   end
 
   it "accepts cookies" do
-    helper_test.request.env.stub(:[]).with('rack-policy.consent') { 'true' }
-    helper_test.cookies_accepted?.should be_true
+    allow(helper_test.request.env).to receive(:[]).with('rack-policy.consent') { 'true' }
+    expect(helper_test.cookies_accepted?).to eq(true)
   end
 
   it "yields to the block" do
-    helper_test.request.env.stub(:[]).with('rack-policy.consent') { 'true' }
+    allow(helper_test.request.env).to receive(:[]).with('rack-policy.consent') { 'true' }
     block = Proc.new { 'Accepted'}
-    helper_test.should_receive(:cookies_accepted?).and_yield(&block)
+    expect(helper_test).to receive(:cookies_accepted?).and_yield(&block)
     helper_test.cookies_accepted?(&block)
   end
-
 end # Rack::Policy::Helpers
