@@ -12,7 +12,7 @@ end
 
 module TestHelpers
   def app
-    @app || mock_app(DummyApp)
+    @app ||= mock_app(DummyApp)
   end
 
   def mock_app(app=nil, opts={}, &block)
@@ -37,8 +37,15 @@ module TestHelpers
 end
 
 RSpec.configure do |config|
-  config.order = :rand
-  config.expect_with :rspec, :stdlib
+  config.expect_with :rspec do |expectations|
+    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
+  end
+  config.mock_with :rspec do |mocks|
+    mocks.verify_partial_doubles = true
+  end
+  config.disable_monkey_patching!
+  config.warnings = true
+  config.order = :random
   config.include Rack::Test::Methods
   config.include TestHelpers
 end
