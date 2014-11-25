@@ -1,11 +1,5 @@
-# -*- encoding: utf-8 -*-
+# coding: utf-8
 
-require 'rubygems'
-
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-
-require 'rspec'
 require 'rack/test'
 require 'rack/policy'
 
