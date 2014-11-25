@@ -1,4 +1,4 @@
-0.4.1 (April 25, 2012)
+0.4.1 (April 25, 2013)
 
 * Fix failing to load view extension in Rails 2.3.x - #2
 
