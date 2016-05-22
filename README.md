@@ -1,12 +1,19 @@
 # Rack-Policy
 [![Gem Version](https://badge.fury.io/rb/rack-policy.png)][gem]
-[![Build Status](https://secure.travis-ci.org/peter-murach/rack-policy.png?branch=master)][travis] [![Dependency Status](https://gemnasium.com/peter-murach/rack-policy.png?travis)][gemnasium]
+[![Build Status](https://secure.travis-ci.org/piotrmurach/rack-policy.png?branch=master)][travis]
+[![Code Climate](https://codeclimate.com/github/piotrmurach/rack-policy/badges/gpa.svg)][codeclimate]
+[![Dependency Status](https://gemnasium.com/piotrmurach/rack-policy.png?travis)][gemnasium]
+[![Coverage Status](https://coveralls.io/repos/github/piotrmurach/rack-policy/badge.svg)][coverage]
+[![Inline docs](http://inch-ci.org/github/piotrmurach/rack-policy.svg?branch=master)][inchpages]
 
 [gem]: http://badge.fury.io/rb/rack-policy
-[travis]: http://travis-ci.org/peter-murach/rack-policy
-[gemnasium]: https://gemnasium.com/peter-murach/rack-policy
+[travis]: http://travis-ci.org/piotrmurach/rack-policy
+[codeclimate]: https://codeclimate.com/github/piotrmurach/rack-policy
+[gemnasium]: https://gemnasium.com/piotrmurach/rack-policy
+[coverage]: https://coveralls.io/github/piotrmurach/rack-policy
+[inchpages]: http://inch-ci.org/github/piotrmurach/rack-policy
 
-This is Rack middleware that makes your app compliant with the 'EU ePrivacy Directive' whereby a user needs to provide implied consent before any data can be stored on his machine.
+> This is Rack middleware that makes your app compliant with the 'EU ePrivacy Directive' whereby a user needs to provide implied consent before any data can be stored on his machine.
 
 ## Installation
 
@@ -152,7 +159,8 @@ run lambda { |env| [200, {'Content-Type' => 'text/plain'}, "Hello, world!\n"] }
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
+This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+
 ## Copyright
 
-Copyright (c) 2012-2014 Piotr Murach. See LICENSE for further details.
-
+Copyright (c) 2012-2016 Piotr Murach. See LICENSE for further details.
