@@ -1,9 +1,10 @@
 #!/usr/bin/env rake
+
 require "bundler/gem_tasks"
-require "rspec/core/rake_task"
 
-RSpec::Core::RakeTask.new(:spec) do |spec|
-  spec.pattern = FileList['spec/**/*_spec.rb']
-end
+FileList['tasks/**/*.rake'].each(&method(:import))
 
-task :default => :spec
+task default: :spec
+
+desc 'Run all specs'
+task ci: %w[ spec ]
