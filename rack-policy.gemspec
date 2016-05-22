@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.email         = [""]
   spec.description   = %q{This is Rack middleware that makes your app compliant with the 'EU ePrivacy Directive'}
   spec.summary       = %q{This is Rack middleware that makes your app compliant with the 'EU ePrivacy Directive' whereby a user needs to provide implied consent before any data can be stored on his machine.}
-  spec.homepage      = "https://github.com/peter-murach/rack-policy"
+  spec.homepage      = "https://github.com/piotrmurach/rack-policy"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($\)
@@ -18,5 +18,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'rack', '~> 1.1'
 
-  spec.add_development_dependency "bundler", "~> 1.6"
+  spec.add_development_dependency 'bundler', '>= 1.5.0', '< 2.0'
+  spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rspec', '~> 3.0'
 end
