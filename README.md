@@ -1,8 +1,8 @@
 # Rack-Policy
-[![Gem Version](https://badge.fury.io/rb/rack-policy.png)][gem]
-[![Build Status](https://secure.travis-ci.org/piotrmurach/rack-policy.png?branch=master)][travis]
+[![Gem Version](https://badge.fury.io/rb/rack-policy.svg)][gem]
+[![Build Status](https://secure.travis-ci.org/piotrmurach/rack-policy.svg?branch=master)][travis]
 [![Code Climate](https://codeclimate.com/github/piotrmurach/rack-policy/badges/gpa.svg)][codeclimate]
-[![Dependency Status](https://gemnasium.com/piotrmurach/rack-policy.png?travis)][gemnasium]
+[![Dependency Status](https://gemnasium.com/piotrmurach/rack-policy.svg?travis)][gemnasium]
 [![Coverage Status](https://coveralls.io/repos/github/piotrmurach/rack-policy/badge.svg)][coverage]
 [![Inline docs](http://inch-ci.org/github/piotrmurach/rack-policy.svg?branch=master)][inchpages]
 
