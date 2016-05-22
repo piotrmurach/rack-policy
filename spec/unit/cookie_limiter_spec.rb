@@ -1,7 +1,5 @@
 # coding: utf-8 -*-
 
-require File.expand_path('../spec_helper.rb', __FILE__)
-
 RSpec.describe Rack::Policy::CookieLimiter do
 
   it 'preserves normal requests' do
